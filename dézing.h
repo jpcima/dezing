@@ -7,6 +7,8 @@
 #include <stdexcept>
 #include <stdio.h>
 
+static bool arg_verbose = false;
+
 static void print_text_pos(FILE *stderr, size_t lineno, size_t column)
 {
     if (lineno != (size_t)-1) {

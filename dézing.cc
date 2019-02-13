@@ -9,7 +9,9 @@
 
 static void explain_arguments()
 {
-    fprintf(stderr, u8"dézing <fichier-fr.po>\n");
+    fprintf(stderr, u8"dézing [options] <fichier-fr.po>\n"
+        u8"    -o <chemin> :  fichier de sortie\n"
+        u8"    -v          :  mode verbeux\n");
 }
 
 static std::string dezing(const std::string &in)
@@ -41,7 +43,7 @@ static std::string dezing(const std::string &in)
     count += re_au.GlobalReplace("au", &out);
     count += re_au_maj.GlobalReplace("Au", &out);
 
-    if (false && count > 0) {
+    if (arg_verbose && count > 0) {
         fprintf(stderr, u8"← %s\n", in.c_str());
         fprintf(stderr, u8"→ %s\n", out.c_str());
     }
@@ -51,8 +53,16 @@ static std::string dezing(const std::string &in)
 
 int main(int argc, char *argv[])
 {
-    for (int arg = 0; (arg = getopt(argc, argv, "")) != -1;) {
+    const char *outfilename = "/dev/stdout";
+
+    for (int arg = 0; (arg = getopt(argc, argv, "vo:")) != -1;) {
         switch (arg) {
+        case 'v':
+            arg_verbose = true;
+            break;
+        case 'o':
+            outfilename = optarg;
+            break;
         default:
             explain_arguments();
             return 1;
@@ -93,7 +103,7 @@ int main(int argc, char *argv[])
     }
 
     po_xerror_count = 0;
-    po_file_write(po, "/dev/stdout", &errh);
+    po_file_write(po, outfilename, &errh);
 
     if (po_xerror_count > 0) {
         po_file_free(po);
