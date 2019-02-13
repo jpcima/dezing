@@ -26,8 +26,8 @@ static std::string dezing(const std::string &in)
     std::string out = in;
     size_t count = 0;
 
-    if ((count = re_pluriel.GlobalReplace("s", &out)) != 0);
-    else count = re_singulier.GlobalReplace("", &out);
+    count += re_pluriel.GlobalReplace("s", &out);
+    count += re_singulier.GlobalReplace("", &out);
 
     if (false && count > 0) {
         fprintf(stderr, u8"← %s\n", in.c_str());
