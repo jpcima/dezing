@@ -19,15 +19,27 @@ static std::string dezing(const std::string &in)
 
     const char *exp_pluriel = u8"·[[:alpha:]]+·s\\b";
     const char *exp_singulier = u8"·[[:alpha:]]+\\b";
+    const char *exp_le = u8"\\ble/la\\b";
+    const char *exp_le_maj = u8"\\bLe/la\\b";
+    const char *exp_au = u8"\\bau/à la\\b";
+    const char *exp_au_maj = u8"\\bAu/à la\\b";
 
     static const RE re_pluriel(exp_pluriel, RE_Options(PCRE_UTF8|PCRE_UCP));
     static const RE re_singulier(exp_singulier, RE_Options(PCRE_UTF8|PCRE_UCP));
+    static const RE re_le(exp_le, RE_Options(PCRE_UTF8|PCRE_UCP));
+    static const RE re_le_maj(exp_le_maj, RE_Options(PCRE_UTF8|PCRE_UCP));
+    static const RE re_au(exp_au, RE_Options(PCRE_UTF8|PCRE_UCP));
+    static const RE re_au_maj(exp_au_maj, RE_Options(PCRE_UTF8|PCRE_UCP));
 
     std::string out = in;
     size_t count = 0;
 
     count += re_pluriel.GlobalReplace("s", &out);
     count += re_singulier.GlobalReplace("", &out);
+    count += re_le.GlobalReplace("le", &out);
+    count += re_le_maj.GlobalReplace("Le", &out);
+    count += re_au.GlobalReplace("au", &out);
+    count += re_au_maj.GlobalReplace("Au", &out);
 
     if (false && count > 0) {
         fprintf(stderr, u8"← %s\n", in.c_str());
